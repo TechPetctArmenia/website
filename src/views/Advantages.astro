@@ -1,0 +1,17 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { t, type Lang } from '../i18n';
+import { table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const items = table(lang, 'advantage_items');
+---
+<Base lang={lang} route="/advantages" title={t(lang, 'nav.advantages')}>
+  <PageHead title={t(lang, 'advantages.title')} eyebrow={t(lang, 'about.eyebrow')} />
+  <section class="section">
+    <div class="container"><ul class="benefits">{items.map((i) => <li>{i.text}</li>)}</ul></div>
+  </section>
+  <ContactSection lang={lang} />
+</Base>

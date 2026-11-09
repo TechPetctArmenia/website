@@ -1,0 +1,28 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ContactSection from '../components/ContactSection.astro';
+import FilterScript from '../components/FilterScript.astro';
+import { t, type Lang } from '../i18n';
+import { table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const order = ['pet', 'spect', 'ct'];
+const prices = table(lang, 'prices').sort((a, b) => order.indexOf(a.category) - order.indexOf(b.category));
+const chips = [['all', 'price.all'], ['pet', 'price.pet'], ['spect', 'price.spect'], ['ct', 'price.ct']] as const;
+---
+<Base lang={lang} route="/price" title={t(lang, 'nav.price')}>
+  <PageHead title={t(lang, 'price.title')} eyebrow={t(lang, 'services.eyebrow')} />
+  <section class="section">
+    <div class="container" data-filter-group>
+      <div class="chips">
+        {chips.map(([v, k]) => <button class="chip" type="button" data-value={v} aria-pressed={v === 'all' ? 'true' : 'false'}>{t(lang, k)}</button>)}
+      </div>
+      <ul class="price-list">
+        {prices.map((p) => <li data-cat={p.category}><span>{p.text}</span><b>{p.price} {t(lang, 'price.currency')}</b></li>)}
+      </ul>
+    </div>
+  </section>
+  <ContactSection lang={lang} />
+  <FilterScript />
+</Base>

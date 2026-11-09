@@ -1,0 +1,93 @@
+---
+import { Picture } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { PHONE_DISPLAY, PHONE_TEL, href, t, type Lang } from '../i18n';
+import { media, table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const hero = media('slider-images/1619520505.webp');
+const slide = table(lang, 'index_sliders')[0];
+const services = table(lang, 'services');
+const about = table(lang, 'abouts')[0];
+const contact = table(lang, 'contacts')[0];
+const steps = [1, 2, 3, 4] as const;
+---
+<Base lang={lang} route="/">
+  <section class="hero">
+    <div class="hero-art" aria-hidden="true"></div>
+    <div class="container hero-grid">
+      <div>
+        <span class="badge">{t(lang, 'home.eyebrow')}</span>
+        <h1>{t(lang, 'home.title')}</h1>
+        <div class="hero-lead prose" set:html={slide.description} />
+        <div class="hero-actions">
+          <a class="btn btn-dark" href="#book">{t(lang, 'cta.book')}</a>
+          <a class="btn btn-secondary" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
+        </div>
+        <ul class="stats">
+          <li><strong>F18</strong>{t(lang, 'fact.isotope.d')}</li>
+          <li><strong>Philips</strong>{t(lang, 'fact.device.d')}</li>
+        </ul>
+      </div>
+      <div class="hero-side">
+        <div class="hero-card">
+          <Picture src={hero} formats={['avif', 'webp']} widths={[480, 720, 960]} sizes="(max-width: 900px) 100vw, 520px" alt={t(lang, 'fact.device.t')} loading="eager" fetchpriority="high" fallbackFormat="webp" quality={72} />
+          <h2>{t(lang, 'hero.card')}</h2>
+          <ul class="check-list">
+            {services.map((s) => <li><a href={href(lang, `/${s.link}`)}>{s.title}</a></li>)}
+          </ul>
+          <p class="hero-hours">{t(lang, 'fact.hours.t')}: {contact.phone_sub_title}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">{t(lang, 'services.eyebrow')}</span>
+        <h2>{t(lang, 'services.title')}</h2>
+      </div>
+      <div class="cards">
+        {services.map((s) => (
+          <a class="card reveal" href={href(lang, `/${s.link}`)}>
+            <h3>{s.title}</h3>
+            <div class="prose" set:html={s.description} />
+            <span class="card-link" style="color:var(--link)">{s.read_more} →</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">{t(lang, 'journey.eyebrow')}</span>
+        <h2>{t(lang, 'journey.title')}</h2>
+      </div>
+      <div class="timeline reveal">
+        <ol>
+          {steps.map((n) => (
+            <li><strong>{t(lang, `journey.${n}.t`)}</strong><br />{t(lang, `journey.${n}.d`)}</li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <Picture src={media(`about_us/${about.img}`)} formats={['avif', 'webp']} widths={[480, 800, 1100]} sizes="(max-width: 900px) 100vw, 560px" alt={about.key_word} class="reveal" fallbackFormat="webp" />
+      <div class="reveal">
+        <span class="eyebrow">{t(lang, 'about.eyebrow')}</span>
+        <h2 style="font-size:clamp(1.625rem,2.8vw,2.375rem);margin-block:8px 18px">{about.title}</h2>
+        <div class="prose" set:html={about.description} />
+      </div>
+    </div>
+  </section>
+
+  <ContactSection lang={lang} />
+</Base>

@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { t, type Lang } from '../i18n';
+import { media, table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const doctors = table(lang, 'doctors');
+---
+<Base lang={lang} route="/doctors" title={t(lang, 'nav.doctors')}>
+  <PageHead title={t(lang, 'doctors.title')} eyebrow={t(lang, 'about.eyebrow')} />
+  <section class="section">
+    <div class="container">
+      <Image class="wide-photo" src={media('doctors/staff.jpg')} widths={[640, 1200]} sizes="(max-width: 1200px) 100vw, 1152px" alt={t(lang, 'gallery.staff')} loading="lazy" />
+      <div class="people">
+        <article class="person">
+          <Image src={media('doctors/Badeyan.jpg')} widths={[400, 800]} sizes="360px" alt={t(lang, 'doctors.director.name')} loading="lazy" />
+          <div><h2>{t(lang, 'doctors.director.name')}</h2><p>{t(lang, 'doctors.director.role')}</p></div>
+        </article>
+        {doctors.map((d) => (
+          <article class="person">
+            <Image src={media(`doctors/${d.image}`)} widths={[400]} sizes="360px" alt={d.name} loading="lazy" />
+            <div><h2>{d.name}</h2><p>{d.profession}</p></div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+  <ContactSection lang={lang} />
+</Base>

@@ -1,0 +1,6 @@
+---
+import View from '../../views/PressArticle.astro';
+import { PRESS_SLUGS } from '../../lib/press';
+export const getStaticPaths = () => PRESS_SLUGS.map((slug) => ({ params: { slug } }));
+---
+<View lang="hy" slug={Astro.params.slug!} />

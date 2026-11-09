@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { href, t, type Lang } from '../i18n';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const links = [
+  ['/pet', 'nav.pet'], ['/spect', 'nav.spect'], ['/price', 'nav.price'], ['/doctors', 'nav.doctors'],
+  ['/advantages', 'nav.advantages'], ['/gallery', 'nav.gallery'], ['/press', 'nav.press'],
+  ['/careers', 'nav.careers'], ['/faq', 'nav.faq'], ['/contact', 'nav.contact'],
+] as const;
+---
+<Base lang={lang} route="/sitemap" title={t(lang, 'sitemap.title')}>
+  <PageHead title={t(lang, 'sitemap.title')} />
+  <section class="section">
+    <div class="container">
+      <ul class="sitemap-list">
+        <li><a href={href(lang, '/')}>{t(lang, 'notfound.home')}</a></li>
+        {links.map(([r, k]) => <li><a href={href(lang, r)}>{t(lang, k)}</a></li>)}
+      </ul>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,9 @@
+node_modules
+dist
+.astro
+.DS_Store
+*.sql
+api-lib/vendor
+api-lib/config.local.php
+mail-dump
+public/media/about_us/

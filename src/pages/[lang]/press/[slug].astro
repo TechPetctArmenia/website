@@ -1,0 +1,8 @@
+---
+import View from '../../../views/PressArticle.astro';
+import { PRESS_SLUGS } from '../../../lib/press';
+import type { Lang } from '../../../i18n';
+export const getStaticPaths = () =>
+  ['en', 'ru'].flatMap((lang) => PRESS_SLUGS.map((slug) => ({ params: { lang, slug } })));
+---
+<View lang={Astro.params.lang as Lang} slug={Astro.params.slug!} />

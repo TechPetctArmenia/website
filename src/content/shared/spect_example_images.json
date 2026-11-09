@@ -1,0 +1,38 @@
+[
+  {
+    "id": 6,
+    "img_name": "1619860148.webp",
+    "key_word": "Cardiac SPECT / CT examination",
+    "nid": 5
+  },
+  {
+    "id": 7,
+    "img_name": "1619860252.webp",
+    "key_word": "Bones SPECT / CT examination",
+    "nid": 6
+  },
+  {
+    "id": 8,
+    "img_name": "1619860315.webp",
+    "key_word": "Kidneys SPECT / CT examination",
+    "nid": 4
+  },
+  {
+    "id": 14,
+    "img_name": "1619860345.webp",
+    "key_word": "Երիկամների SPECT/CT հետազոտություն",
+    "nid": 1
+  },
+  {
+    "id": 15,
+    "img_name": "1619437805.jpg",
+    "key_word": "Սրտի SPECT/CT հետազոտություն",
+    "nid": 2
+  },
+  {
+    "id": 16,
+    "img_name": "1619437858.jpg",
+    "key_word": "Ոսկրերի SPECT/CT հետազոտություն",
+    "nid": 3
+  }
+]

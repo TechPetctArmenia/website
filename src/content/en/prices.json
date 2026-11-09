@@ -1,0 +1,191 @@
+[
+  {
+    "id": 39,
+    "price": "450 000",
+    "text": "Positron Emission Tomography - Computed Tomography (PET / CT) using F18-fluorodeoxyglucose",
+    "category": "pet",
+    "discount": null
+  },
+  {
+    "id": 40,
+    "price": "50 000",
+    "text": "Skeletal system radioisotope examination / adults /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 41,
+    "price": "40 000",
+    "text": "Skeletal system radioisotope examination / children /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 42,
+    "price": "50 000",
+    "text": "Lungs radioisotope examination / adults /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 43,
+    "price": "40 000",
+    "text": "Lungs radioisotope examination / children /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 44,
+    "price": "45 000",
+    "text": "Kidneys radioisotope examination / adults /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 45,
+    "price": "35 000",
+    "text": "Kidneys radioisotope examination / children /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 46,
+    "price": "35 000",
+    "text": "Thyroid glands radioisotope examination / adults /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 47,
+    "price": "20 000",
+    "text": "Thyroid glands radioisotope examination / children /",
+    "category": "spect",
+    "discount": null
+  },
+  {
+    "id": 48,
+    "price": "40 000",
+    "text": "Brain CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 49,
+    "price": "30 000",
+    "text": "Frontal skull bones CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 50,
+    "price": "20 000",
+    "text": "Nasal cavities CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 51,
+    "price": "30 000",
+    "text": "Temporals CT (middle, inner ear)",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 52,
+    "price": "30 000",
+    "text": "Eyeglasses CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 53,
+    "price": "30 000",
+    "text": "Neck tissues CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 54,
+    "price": "40 000",
+    "text": "Breast CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 55,
+    "price": "30 000",
+    "text": "Chest CT *, low dose",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 56,
+    "price": "40 000",
+    "text": "Abdomen CT (liver, pancreas, spleen, kidneys, gastrointestinal tract)",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 57,
+    "price": "30 000",
+    "text": "Small pelvis CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 58,
+    "price": "60 000",
+    "text": "Abdominal and pelvic cavities CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 59,
+    "price": "40 000",
+    "text": "Kidneys and ureters CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 60,
+    "price": "40 000",
+    "text": "Cervical spine CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 61,
+    "price": "40 000",
+    "text": "Thoracic spine CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 62,
+    "price": "40 000",
+    "text": "Spine lumbar-sacral part CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 63,
+    "price": "20 000",
+    "text": "Each additional segment CT, in case of involvement of more than one spine",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 64,
+    "price": "40 000",
+    "text": "Upper or lower extremities CT",
+    "category": "ct",
+    "discount": null
+  },
+  {
+    "id": 65,
+    "price": "25 000",
+    "text": "Joints CT (shoulder joint, elbow joint, hip joint, knee joint, calf-toe joint)",
+    "category": "ct",
+    "discount": null
+  }
+]

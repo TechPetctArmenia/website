@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { t, type Lang } from '../i18n';
+import { table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const faqs = table(lang, 'faqs');
+---
+<Base lang={lang} route="/faq" title={t(lang, 'nav.faq')}>
+  <PageHead title={t(lang, 'faq.title')} eyebrow={t(lang, 'nav.faq')} />
+  <section class="section">
+    <div class="container narrow faq">
+      {faqs.map((f, i) => (
+        <details open={i === 0}>
+          <summary>{f.title}</summary>
+          <div class="prose" set:html={f.description} />
+        </details>
+      ))}
+    </div>
+  </section>
+  <ContactSection lang={lang} />
+</Base>

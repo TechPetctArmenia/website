@@ -1,0 +1,21 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { href, t, type Lang } from '../i18n';
+import { media } from '../lib/content';
+import { pressArticles } from '../lib/press';
+interface Props { lang: Lang; slug: string; }
+const { lang, slug } = Astro.props;
+const a = pressArticles(lang).find((x) => x.slug === slug)!;
+---
+<Base lang={lang} route={`/press/${slug}`} title={a.title}>
+  <PageHead title={a.title} eyebrow={t(lang, 'press.title')} />
+  <section class="section">
+    <div class="container narrow">
+      <Image class="wide-photo" src={media(`press/${a.img}`)} widths={[640, 860]} sizes="(max-width: 900px) 100vw, 812px" alt="" />
+      <div class="prose" set:html={a.description} />
+      <p style="margin-top:28px"><a href={href(lang, '/press')}>← {t(lang, 'press.title')}</a></p>
+    </div>
+  </section>
+</Base>

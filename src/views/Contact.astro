@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const MAP = 'https://www.google.com/maps/d/u/0/embed?mid=1aNwMG3Qi1NxMobn1gqMiCOnJ5PWDO3wn&z=16';
+---
+<Base lang={lang} route="/contact" title={t(lang, 'nav.contact')}>
+  <PageHead title={t(lang, 'contact.page')} eyebrow={t(lang, 'contact.eyebrow')} />
+  <ContactSection lang={lang} />
+  <section class="section">
+    <div class="container">
+      <div class="map-box" data-map={MAP}>
+        <button class="btn btn-dark" type="button">{t(lang, 'contact.map')}</button>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const box = document.querySelector<HTMLElement>('.map-box')!;
+  box.querySelector('button')!.addEventListener('click', () => {
+    const frame = document.createElement('iframe');
+    frame.src = box.dataset.map!;
+    frame.title = 'Google Maps';
+    frame.loading = 'lazy';
+    box.replaceChildren(frame);
+  });
+</script>

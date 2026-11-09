@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { t, type Lang } from '../i18n';
+import { media, shared, table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const [what, diff, where, when] = table(lang, 'spects');
+const examples = table(lang, 'spect_examples');
+const imgs = shared('spect_example_images');
+---
+<Base lang={lang} route="/spect" title={t(lang, 'nav.spect')} description={what.title}>
+  <header class="page-head">
+    <div class="container">
+      <span class="eyebrow">{t(lang, 'services.eyebrow')}</span>
+      <h1>{what.title}</h1>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container" style="max-width:860px">
+      <div class="prose" set:html={what.text} />
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container cards">
+      {[diff, where, when].map((s) => <article class="card"><h3>{s.title}</h3><div class="prose" set:html={s.text} /></article>)}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>{t(lang, 'examples.title')}</h2></div>
+      {examples.map((g) => (
+        <div class="example-group">
+          <h3>{g.name}</h3>
+          <div class="thumbs">
+            {imgs.filter((i) => i.nid === g.id).map((i) => (
+              <Image src={media(`spect_page/${i.img_name}`)} widths={[240, 480]} sizes="240px" alt={g.name} loading="lazy" />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <ContactSection lang={lang} />
+</Base>

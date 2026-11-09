@@ -1,0 +1,30 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { href, t, type Lang } from '../i18n';
+import { media } from '../lib/content';
+import { pressArticles } from '../lib/press';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const articles = pressArticles(lang);
+---
+<Base lang={lang} route="/press" title={t(lang, 'press.title')}>
+  <PageHead title={t(lang, 'press.title')} eyebrow={t(lang, 'about.eyebrow')} />
+  <section class="section">
+    <div class="container cards">
+      {articles.map((a) => (
+        <a class="press-card card" style="--x:0" href={href(lang, `/press/${a.slug}`)}>
+          <Image src={media(`press/${a.img}`)} widths={[400, 720]} sizes="(max-width: 900px) 100vw, 380px" alt="" loading="lazy" />
+          <h3>{a.title}</h3>
+          <div class="prose" set:html={a.short_description} />
+          <span class="card-link" style="color:var(--link)">{t(lang, 'cta.more')} →</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .press-card::before { display: none; }
+</style>

@@ -1,0 +1,13 @@
+<script>
+  document.querySelectorAll<HTMLElement>('[data-filter-group]').forEach((group) => {
+    const chips = group.querySelectorAll<HTMLButtonElement>('.chip');
+    const items = group.querySelectorAll<HTMLElement>('[data-cat]');
+    chips.forEach((chip) => {
+      chip.addEventListener('click', () => {
+        chips.forEach((c) => c.setAttribute('aria-pressed', String(c === chip)));
+        const cat = chip.dataset.value;
+        items.forEach((el) => { el.hidden = cat !== 'all' && el.dataset.cat !== cat; });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,49 @@
+---
+import { getImage, Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import FilterScript from '../components/FilterScript.astro';
+import { t, type Lang } from '../i18n';
+import { media, table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+// The old site showed different photos per language; all languages now share them.
+const STAFF_FILTER_ID = 7;
+const rows = [...table('hy', 'galleries'), ...table('en', 'galleries')];
+const photos = await Promise.all(rows.map(async (r) => {
+  const src = media(`gallery/${r.img_name}`);
+  const large = await getImage({ src, width: Math.min(1600, src.width), format: 'webp' });
+  return { src, large: large.src, cat: r.title_id === STAFF_FILTER_ID ? 'staff' : 'lab' };
+}));
+const chips = [['all', 'gallery.all'], ['lab', 'gallery.lab'], ['staff', 'gallery.staff']] as const;
+---
+<Base lang={lang} route="/gallery" title={t(lang, 'gallery.title')}>
+  <PageHead title={t(lang, 'gallery.title')} eyebrow={t(lang, 'about.eyebrow')} />
+  <section class="section">
+    <div class="container" data-filter-group>
+      <div class="chips">
+        {chips.map(([v, k]) => <button class="chip" type="button" data-value={v} aria-pressed={v === 'all' ? 'true' : 'false'}>{t(lang, k)}</button>)}
+      </div>
+      <div class="grid-gallery">
+        {photos.map((p) => (
+          <button type="button" data-cat={p.cat} data-large={p.large} aria-label={t(lang, p.cat === 'staff' ? 'gallery.staff' : 'gallery.lab')}>
+            <Image src={p.src} widths={[320, 640]} sizes="(max-width: 600px) 100vw, 380px" alt="" loading="lazy" />
+          </button>
+        ))}
+      </div>
+    </div>
+  </section>
+  <dialog class="lightbox"><button type="button" aria-label={t(lang, 'gallery.close')}>✕</button><img alt="" /></dialog>
+  <FilterScript />
+</Base>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('.lightbox')!;
+  const img = dialog.querySelector('img')!;
+  document.querySelectorAll<HTMLButtonElement>('.grid-gallery button').forEach((b) => {
+    b.addEventListener('click', () => { img.src = b.dataset.large!; dialog.showModal(); });
+  });
+  dialog.querySelector('button')!.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+</script>

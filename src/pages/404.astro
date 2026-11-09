@@ -1,0 +1,13 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHead from '../components/PageHead.astro';
+import { href, t, LANGS } from '../i18n';
+---
+<Base lang="hy" route="/" title={t('hy', 'notfound.title')}>
+  <PageHead title={t('hy', 'notfound.title')} eyebrow="404" />
+  <section class="section">
+    <div class="container">
+      {LANGS.map((l) => <p lang={l}><a class="btn btn-secondary" href={href(l, '/')}>{t(l, 'notfound.home')}</a></p>)}
+    </div>
+  </section>
+</Base>

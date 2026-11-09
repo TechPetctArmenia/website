@@ -1,0 +1,132 @@
+---
+import '../styles/global.css';
+import { LANGS, LANG_LABELS, OG_LOCALE, PHONE_DISPLAY, PHONE_TEL, EMAIL, href, t, type Lang } from '../i18n';
+import { table } from '../lib/content';
+
+interface Props { lang: Lang; route: string; title?: string; description?: string; }
+const { lang, route, title, description } = Astro.props;
+
+const siteName = t(lang, 'site.name');
+const fullTitle = title ? `${title} | ${siteName}` : siteName;
+const desc = description ?? t(lang, 'site.description');
+const abs = (l: Lang) => new URL(href(l, route), Astro.site).href;
+const contact = table(lang, 'contacts')[0];
+
+const primary = [
+  ['/pet', 'nav.pet'], ['/spect', 'nav.spect'], ['/price', 'nav.price'], ['/doctors', 'nav.doctors'],
+] as const;
+const center = [
+  ['/advantages', 'nav.advantages'], ['/gallery', 'nav.gallery'], ['/press', 'nav.press'], ['/careers', 'nav.careers'],
+] as const;
+const trailing = [['/faq', 'nav.faq'], ['/contact', 'nav.contact']] as const;
+const all = [...primary, ...center, ...trailing];
+const current = (r: string) => (route === r ? 'page' : undefined);
+
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'MedicalClinic', name: siteName, url: abs(lang),
+  telephone: PHONE_TEL, email: EMAIL,
+  address: { '@type': 'PostalAddress', streetAddress: contact.home_sub_title, addressLocality: 'Yerevan', postalCode: '0036', addressCountry: 'AM' },
+};
+---
+<!doctype html>
+<html lang={lang} class="no-js">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={abs(lang)} />
+    {LANGS.map((l) => <link rel="alternate" hreflang={l} href={abs(l)} />)}
+    <link rel="alternate" hreflang="x-default" href={abs('hy')} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:url" content={abs(lang)} />
+    <meta property="og:locale" content={OG_LOCALE[lang]} />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#f2a21c" />
+    <script is:inline>document.documentElement.classList.remove('no-js')</script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip" href="#main">{t(lang, 'skip')}</a>
+    <header class="site-header">
+      <div class="container header-row">
+        <a class="brand" href={href(lang, '/')} aria-label={siteName}>
+          {lang === 'hy'
+            ? <img src="/img/logo.svg" alt="" width="131" height="56" />
+            : <><img src="/img/mark.svg" alt="" width="53" height="56" /><span>{siteName}</span></>}
+        </a>
+        <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label={t(lang, 'menu')}>☰</button>
+        <nav class="nav" id="nav" aria-label={t(lang, 'menu')}>
+          <ul>
+            {primary.map(([r, k]) => <li><a href={href(lang, r)} aria-current={current(r)}>{t(lang, k)}</a></li>)}
+            <li>
+              <details>
+                <summary>{t(lang, 'nav.center')}</summary>
+                <ul>{center.map(([r, k]) => <li><a href={href(lang, r)} aria-current={current(r)}>{t(lang, k)}</a></li>)}</ul>
+              </details>
+            </li>
+            {trailing.map(([r, k]) => <li><a href={href(lang, r)} aria-current={current(r)}>{t(lang, k)}</a></li>)}
+          </ul>
+        </nav>
+        <div class="header-tools">
+          <a class="btn btn-primary btn-sm header-phone" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
+          <div class="lang">
+            {LANGS.map((l) => <a href={href(l, route)} hreflang={l} lang={l} aria-current={l === lang ? 'true' : undefined}>{LANG_LABELS[l]}</a>)}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main"><slot /></main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div>
+            {lang === 'hy'
+              ? <img src="/img/logo-light.svg" alt={siteName} width="196" height="84" loading="lazy" />
+              : <><img src="/img/mark.svg" alt="" width="79" height="84" loading="lazy" /><p>{siteName}</p></>}
+          </div>
+          <div>
+            <h2>{t(lang, 'footer.nav')}</h2>
+            <ul>{all.map(([r, k]) => <li><a href={href(lang, r)}>{t(lang, k)}</a></li>)}</ul>
+          </div>
+          <div>
+            <h2>{t(lang, 'footer.contact')}</h2>
+            <ul>
+              <li>{contact.home_title}, {contact.home_sub_title}</li>
+              <li><a href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a></li>
+              <li><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+              <li>{contact.phone_sub_title}</li>
+            </ul>
+          </div>
+        </div>
+        <p class="footer-bottom">© {new Date().getFullYear()} {siteName}. {t(lang, 'footer.rights')}</p>
+      </div>
+    </footer>
+
+    <script>
+      const toggle = document.querySelector('.menu-toggle');
+      const nav = document.getElementById('nav');
+      toggle?.addEventListener('click', () => {
+        const open = nav!.classList.toggle('open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      document.addEventListener('click', (e) => {
+        document.querySelectorAll<HTMLDetailsElement>('.nav details[open]').forEach((d) => {
+          if (!d.contains(e.target as Node)) d.open = false;
+        });
+      });
+      const items = document.querySelectorAll('.reveal');
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { threshold: 0.1 });
+      items.forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

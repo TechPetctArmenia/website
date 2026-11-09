@@ -1,0 +1,24 @@
+---
+import ContactForm from './ContactForm.astro';
+import { PHONE_DISPLAY, PHONE_TEL, EMAIL, t, type Lang } from '../i18n';
+import { table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const c = table(lang, 'contacts')[0];
+---
+<section class="section alt" id="book">
+  <div class="container contact-grid">
+    <div>
+      <span class="eyebrow">{t(lang, 'contact.eyebrow')}</span>
+      <h2 style="font-size:clamp(1.625rem,2.8vw,2.375rem);margin-top:8px">{t(lang, 'contact.title')}</h2>
+      <p style="margin-top:12px;color:var(--ink-soft)">{t(lang, 'contact.lead')}</p>
+      <ul class="contact-list">
+        <li><b>{t(lang, 'contact.phone')}</b><a href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a></li>
+        <li><b>{t(lang, 'contact.address')}</b>{c.home_title}, {c.home_sub_title}</li>
+        <li><b>{t(lang, 'contact.hours')}</b>{c.phone_sub_title}</li>
+        <li><b>{t(lang, 'contact.email')}</b><a href={`mailto:${EMAIL}`}>{EMAIL}</a></li>
+      </ul>
+    </div>
+    <ContactForm lang={lang} />
+  </div>
+</section>

@@ -1,0 +1,80 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import ContactSection from '../components/ContactSection.astro';
+import { t, type Lang } from '../i18n';
+import { media, shared, table } from '../lib/content';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+
+const SOURCE_IDS = {
+  hy: { what: 13, guide: 14, prep: 15, day: 16, bring: 17, how: 18, duration: 19, contra: 20 },
+  en: { what: 21, prep: 22, day: 23, bring: 24, how: 25, duration: 26, contra: 27 },
+} as const;
+const ids: Record<string, number> = lang === 'hy' ? SOURCE_IDS.hy : SOURCE_IDS.en;
+const rows = table(lang, 'pets');
+const get = (k: string) => rows.find((r) => r.id === ids[k]);
+const video = shared('pet_videos')[0];
+const titles = table(lang, 'four_example_titles');
+const imgs = shared('four_example_images');
+const prep = ['prep', 'day', 'bring'].map(get);
+---
+<Base lang={lang} route="/pet" title={t(lang, 'nav.pet')} description={get('what').title}>
+  <header class="page-head">
+    <div class="container">
+      <span class="eyebrow">{t(lang, 'services.eyebrow')}</span>
+      <h1>{get('what').title}</h1>
+    </div>
+  </header>
+
+  <section class="section">
+    <div class="container split">
+      <div class="prose" set:html={get('what').text} />
+      <video controls preload="none" poster={media(`video/${video.poster_name}`).src} aria-label={t(lang, 'pet.video')}>
+        <source src={`/media/video/${video.video_name}`} type="video/mp4" />
+      </video>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="section-head"><h2>{t(lang, 'pet.prepare')}</h2></div>
+      <div class="cards">
+        {prep.map((p) => <article class="card"><h3>{p.title}</h3><div class="prose" set:html={p.text} /></article>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>{t(lang, 'pet.process')}</h2></div>
+      <div class="timeline" set:html={get('how').text} />
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container callouts">
+      <div class="callout"><h3>{get('duration').title}</h3><div class="prose" set:html={get('duration').text} /></div>
+      <div class="callout warn"><h3>{get('contra').title}</h3><div class="prose" set:html={get('contra').text} /></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>{t(lang, 'examples.title')}</h2></div>
+      {titles.map((g) => (
+        <div class="example-group">
+          <h3>{g.name}</h3>
+          <div class="thumbs">
+            {imgs.filter((i) => i.title_id === g.id).map((i) => (
+              <Image src={media(`four_examples/${i.img_name}`)} widths={[240, 480]} sizes="240px" alt={g.name} loading="lazy" />
+            ))}
+          </div>
+        </div>
+      ))}
+      {get('guide') && <p style="margin-top:32px"><a href="https://www.moh.am/uploads/4588.pdf" rel="noopener noreferrer" target="_blank">{t(lang, 'pet.guideline')} (PDF)</a></p>}
+    </div>
+  </section>
+
+  <ContactSection lang={lang} />
+</Base>

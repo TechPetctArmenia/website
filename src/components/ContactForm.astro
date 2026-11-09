@@ -1,0 +1,57 @@
+---
+import { t, type Lang } from '../i18n';
+interface Props { lang: Lang; topic?: string; job?: string; }
+const { lang, topic = 'booking', job } = Astro.props;
+const topics = ['booking', 'price', 'state', 'result', 'job', 'other'] as const;
+---
+<form class="form js-contact" method="post" action="/api/send.php"
+  data-sending={t(lang, 'form.sending')} data-ok={t(lang, 'form.ok')} data-error={t(lang, 'form.error')}>
+  <input type="hidden" name="lang" value={lang} />
+  <input type="hidden" name="started" value="" />
+  {job && <input type="hidden" name="job" value={job} />}
+  <div class="hp" aria-hidden="true">
+    <label>Website <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+  </div>
+  <div class="field"><label for="f-name">{t(lang, 'form.name')}</label><input id="f-name" name="name" required maxlength="80" autocomplete="given-name" /></div>
+  <div class="field"><label for="f-surname">{t(lang, 'form.surname')}</label><input id="f-surname" name="surname" required maxlength="80" autocomplete="family-name" /></div>
+  <div class="field"><label for="f-phone">{t(lang, 'form.phone')}</label><input id="f-phone" name="phone" type="tel" required maxlength="30" autocomplete="tel" /></div>
+  <div class="field"><label for="f-email">{t(lang, 'form.email')}</label><input id="f-email" name="email" type="email" maxlength="120" autocomplete="email" /></div>
+  <div class="field full">
+    <label for="f-topic">{t(lang, 'form.topic')}</label>
+    <select id="f-topic" name="topic">
+      {topics.map((v) => <option value={v} selected={v === topic}>{t(lang, `form.topic.${v}`)}</option>)}
+    </select>
+  </div>
+  <div class="field full"><label for="f-message">{t(lang, 'form.message')}</label><textarea id="f-message" name="message" required maxlength="3000"></textarea></div>
+  <div class="form-foot">
+    <button class="btn btn-primary" type="submit">{t(lang, 'form.send')}</button>
+    <p class="form-note">{t(lang, 'form.privacy')}</p>
+    <p class="form-status" role="status" aria-live="polite"></p>
+  </div>
+</form>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>('.js-contact').forEach((form) => {
+    (form.elements.namedItem('started') as HTMLInputElement).value = String(Date.now());
+    const status = form.querySelector<HTMLElement>('.form-status')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type=submit]')!;
+    const label = button.textContent;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      button.disabled = true;
+      button.textContent = form.dataset.sending!;
+      status.textContent = '';
+      let ok = false;
+      try {
+        const res = await fetch(form.action, { method: 'POST', body: new FormData(form), headers: { Accept: 'application/json' } });
+        ok = res.ok;
+      } catch { ok = false; }
+      status.dataset.state = ok ? 'ok' : 'error';
+      status.textContent = ok ? form.dataset.ok! : form.dataset.error!;
+      if (ok) form.reset();
+      (form.elements.namedItem('started') as HTMLInputElement).value = String(Date.now());
+      button.disabled = false;
+      button.textContent = label;
+    });
+  });
+</script>

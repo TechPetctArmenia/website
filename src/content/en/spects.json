@@ -1,0 +1,22 @@
+[
+  {
+    "id": 12,
+    "title": "What is SPECT/CT (Single-Photon Emission Tomography - Computed Tomography)?",
+    "text": "<p>Single-Photon Emission Tomography - Computed Tomography (SPECT/CT) is a radionuclide examination technique, which provides a stratified image of human anatomical structures due to the distribution of radionuclides in human body. Radiopharmaceuticals are used for this (the most commonly used is technetium).</p>"
+  },
+  {
+    "id": 13,
+    "title": "How does it differ from Scintigraphy and Positron Emission Tomography - Computed Tomography (PET/CT)?",
+    "text": "<p>Unlike Scintigraphy, Single-Photon Emission Tomography - Computed Tomography (SPECT/CT) allows for 3D imaging; and unlike Positron Emission Tomography - Computed Tomography (PET/CT), due to the injected radioactive isotope, as a result of physical interactions in the body, certain features of only one gamma-ray off and image acquisition.</p>"
+  },
+  {
+    "id": 14,
+    "title": "Where is Single-Photon Emission Tomography - Computed Tomography (SPECT/CT) used?",
+    "text": "<ul>\n\t<li>In cardiology (assessment of myocardial perfusion);</li>\n\t<li>In neurology;</li>\n\t<li>In urology (dynamic-static nephroscintigraphy);</li>\n\t<li>In pulmonology;</li>\n\t<li>When diagnosing brain tumors;</li>\n\t<li>During breast cancer scintigraphy;</li>\n\t<li>During osteosynthesis (detection of primary և secondary bone cancer);</li>\n\t<li>During liver and spleen scintigraphy;</li>\n\t<li>During thyroid gland and glandulae parathyreoideae scintigraphy.</li>\n</ul>"
+  },
+  {
+    "id": 15,
+    "title": "When is this examination be conducted?",
+    "text": "<p>The examination is conducted according to the doctor's instructions when there is a suspicion of primary or secondary skeletal infection, as well as when there is a suspicion of pathology in any of the above-mentioned aspects.</p>"
+  }
+]
