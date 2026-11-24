@@ -24,3 +24,8 @@ export const otherLangPaths = () => [{ params: { lang: 'en' } }, { params: { lan
 export const PHONE_DISPLAY = '(+374 12) 30-12-12';
 export const PHONE_TEL = '+37412301212';
 export const EMAIL = 'petctarmenia@gmail.com';
+export const SOCIAL = {
+  instagram: 'https://www.instagram.com/',
+  facebook: 'https://www.facebook.com/',
+  linkedin: 'https://www.linkedin.com/',
+} as const;

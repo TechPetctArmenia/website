@@ -2,92 +2,855 @@
 import { Picture } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import ContactSection from '../components/ContactSection.astro';
+import MapSection from '../components/MapSection.astro';
 import { PHONE_DISPLAY, PHONE_TEL, href, t, type Lang } from '../i18n';
 import { media, table } from '../lib/content';
-interface Props { lang: Lang; }
+
+interface Props {
+  lang: Lang;
+}
 const { lang } = Astro.props;
 
-const hero = media('slider-images/1619520505.webp');
-const slide = table(lang, 'index_sliders')[0];
+const sliders = table(lang, 'index_sliders');
 const services = table(lang, 'services');
 const about = table(lang, 'abouts')[0];
+const advantages = table<{ text: string }>(lang, 'advantage_items');
+const faqs = table(lang, 'faqs').slice(0, 4);
 const contact = table(lang, 'contacts')[0];
 const steps = [1, 2, 3, 4] as const;
+
+const ui = {
+  hy: {
+    prev: 'Նախորդ սլայդ',
+    next: 'Հաջորդ սլայդ',
+    tabEyebrow: 'Ախտորոշիչ ուղղություններ',
+    tabTitle: 'Ընտրեք հետազոտության տեսակը',
+    advEyebrow: 'Ինչու մենք',
+    stepHint: 'Սեղմեք քայլի վրա՝ մանրամասները տեսնելու համար',
+    faqEyebrow: 'Հաճախ տրվող հարցեր',
+    faqAll: 'Տեսնել բոլոր հարցերը',
+    hoursLabel: 'Աշխատանքային ժամեր',
+  },
+  en: {
+    prev: 'Previous slide',
+    next: 'Next slide',
+    tabEyebrow: 'Diagnostic Modalities',
+    tabTitle: 'Explore our examinations',
+    advEyebrow: 'Why Choose Us',
+    stepHint: 'Click a step to highlight details',
+    faqEyebrow: 'Frequently Asked Questions',
+    faqAll: 'View all questions',
+    hoursLabel: 'Working Hours',
+  },
+  ru: {
+    prev: 'Предыдущий слайд',
+    next: 'Следующий слайд',
+    tabEyebrow: 'Методы диагностики',
+    tabTitle: 'Выберите вид исследования',
+    advEyebrow: 'Почему мы',
+    stepHint: 'Нажмите на шаг для подробностей',
+    faqEyebrow: 'Частые вопросы',
+    faqAll: 'Все вопросы',
+    hoursLabel: 'Часы работы',
+  },
+}[lang];
 ---
+
 <Base lang={lang} route="/">
-  <section class="hero">
-    <div class="hero-art" aria-hidden="true"></div>
-    <div class="container hero-grid">
-      <div>
-        <span class="badge">{t(lang, 'home.eyebrow')}</span>
-        <h1>{t(lang, 'home.title')}</h1>
-        <div class="hero-lead prose" set:html={slide.description} />
-        <div class="hero-actions">
-          <a class="btn btn-dark" href="#book">{t(lang, 'cta.book')}</a>
-          <a class="btn btn-secondary" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
+  <!-- Hero Slider (brighter background) -->
+  <section class="h-hero" aria-roledescription="carousel" aria-label={t(lang, 'site.name')}>
+    <div class="h-slides">
+      {sliders.map((s, idx) => (
+        <div class:list={['h-slide', { active: idx === 0 }]} data-slide={idx} aria-hidden={idx !== 0 ? 'true' : 'false'}>
+          <Picture
+            src={media(`slider-images/${s.image}`)}
+            formats={['avif', 'webp']}
+            widths={[768, 1280, 1920]}
+            sizes="100vw"
+            alt={s.title}
+            loading={idx === 0 ? 'eager' : 'lazy'}
+            fetchpriority={idx === 0 ? 'high' : 'auto'}
+            fallbackFormat="webp"
+            quality={78}
+            class="h-slide-img"
+          />
+          <div class="h-slide-overlay" aria-hidden="true"></div>
         </div>
-        <ul class="stats">
-          <li><strong>F18</strong>{t(lang, 'fact.isotope.d')}</li>
-          <li><strong>Philips</strong>{t(lang, 'fact.device.d')}</li>
-        </ul>
+      ))}
+    </div>
+
+    <div class="container h-hero-inner">
+      <div class="h-hero-content">
+        <span class="h-pill">{t(lang, 'home.eyebrow')}</span>
+        <h1>{t(lang, 'home.title')}</h1>
+        <div class="h-hero-desc prose" set:html={sliders[0]?.description} />
+        <div class="h-hero-actions">
+          <a class="btn btn-primary" href="#book">{t(lang, 'cta.book')}</a>
+          <a class="btn h-btn-ghost" href={`tel:${PHONE_TEL}`}>{PHONE_DISPLAY}</a>
+        </div>
       </div>
-      <div class="hero-side">
-        <div class="hero-card">
-          <Picture src={hero} formats={['avif', 'webp']} widths={[480, 720, 960]} sizes="(max-width: 900px) 100vw, 520px" alt={t(lang, 'fact.device.t')} loading="eager" fetchpriority="high" fallbackFormat="webp" quality={72} />
-          <h2>{t(lang, 'hero.card')}</h2>
-          <ul class="check-list">
-            {services.map((s) => <li><a href={href(lang, `/${s.link}`)}>{s.title}</a></li>)}
-          </ul>
-          <p class="hero-hours">{t(lang, 'fact.hours.t')}: {contact.phone_sub_title}</p>
+
+      <div class="h-slider-controls">
+        <div class="h-dots" role="tablist" aria-label="Slides">
+          {sliders.map((_, idx) => (
+            <button
+              type="button"
+              class:list={['h-dot', { active: idx === 0 }]}
+              data-dot={idx}
+              aria-label={`Slide ${idx + 1}`}
+              aria-pressed={idx === 0 ? 'true' : 'false'}
+            />
+          ))}
+        </div>
+        <div class="h-arrows">
+          <button type="button" class="h-arrow" data-prev aria-label={ui.prev}>←</button>
+          <button type="button" class="h-arrow" data-next aria-label={ui.next}>→</button>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <!-- Floating Quick Services Strip -->
+  <section class="h-quick-wrap">
     <div class="container">
-      <div class="section-head reveal">
-        <span class="eyebrow">{t(lang, 'services.eyebrow')}</span>
-        <h2>{t(lang, 'services.title')}</h2>
-      </div>
-      <div class="cards">
-        {services.map((s) => (
-          <a class="card reveal" href={href(lang, `/${s.link}`)}>
-            <h3>{s.title}</h3>
-            <div class="prose" set:html={s.description} />
-            <span class="card-link" style="color:var(--link)">{s.read_more} →</span>
+      <div class="h-quick-grid">
+        {services.map((s, idx) => (
+          <a class="h-quick-card reveal" href={href(lang, `/${s.link}`)}>
+            <span class="h-quick-num">0{idx + 1}</span>
+            <div>
+              <h2>{s.title}</h2>
+              <p>{s.sub_title}</p>
+            </div>
+            <span class="h-quick-arrow" aria-hidden="true">→</span>
           </a>
         ))}
       </div>
     </div>
   </section>
 
-  <section class="section alt">
+  <!-- Interactive Diagnostic Tabs -->
+  <section class="section">
     <div class="container">
       <div class="section-head reveal">
-        <span class="eyebrow">{t(lang, 'journey.eyebrow')}</span>
-        <h2>{t(lang, 'journey.title')}</h2>
+        <span class="eyebrow">{ui.tabEyebrow}</span>
+        <h2>{ui.tabTitle}</h2>
       </div>
-      <div class="timeline reveal">
-        <ol>
-          {steps.map((n) => (
-            <li><strong>{t(lang, `journey.${n}.t`)}</strong><br />{t(lang, `journey.${n}.d`)}</li>
+
+      <div class="h-tabs-shell reveal">
+        <div class="h-tablist" role="tablist">
+          {services.map((s, idx) => (
+            <button
+              type="button"
+              role="tab"
+              class:list={['h-tab-btn', { active: idx === 0 }]}
+              data-tab={idx}
+              aria-selected={idx === 0 ? 'true' : 'false'}
+            >
+              {s.title}
+            </button>
           ))}
-        </ol>
+        </div>
+
+        <div class="h-tab-panels">
+          {services.map((s, idx) => (
+            <div
+              role="tabpanel"
+              class:list={['h-tab-panel', { active: idx === 0 }]}
+              data-panel={idx}
+              hidden={idx !== 0}
+            >
+              <div class="h-panel-grid">
+                <div>
+                  <span class="eyebrow">{s.sub_title}</span>
+                  <h3>{s.title}</h3>
+                  <div class="prose h-panel-prose" set:html={s.description} />
+                  <div class="h-panel-actions">
+                    <a class="btn btn-primary" href={href(lang, `/${s.link}`)}>{s.read_more}</a>
+                    <a class="btn btn-secondary" href="#book">{t(lang, 'cta.book')}</a>
+                  </div>
+                </div>
+                <div class="h-panel-meta">
+                  <div class="h-meta-box">
+                    <strong>F18 · Cyclotron C18</strong>
+                    <p>{t(lang, 'fact.isotope.d')}</p>
+                  </div>
+                  <div class="h-meta-box">
+                    <strong>Philips PET/CT</strong>
+                    <p>{t(lang, 'fact.device.d')}</p>
+                  </div>
+                  <div class="h-meta-box">
+                    <strong>{ui.hoursLabel}</strong>
+                    <p>{contact.phone_sub_title}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </section>
 
-  <section class="section">
-    <div class="container split">
-      <Picture src={media(`about_us/${about.img}`)} formats={['avif', 'webp']} widths={[480, 800, 1100]} sizes="(max-width: 900px) 100vw, 560px" alt={about.key_word} class="reveal" fallbackFormat="webp" />
+  <!-- About & Advantages Split -->
+  <section class="section alt">
+    <div class="container h-about-grid">
+      <div class="h-about-media reveal">
+        <Picture
+          src={media(`about_us/${about.img}`)}
+          formats={['avif', 'webp']}
+          widths={[480, 800, 1100]}
+          sizes="(max-width: 900px) 100vw, 540px"
+          alt={about.key_word}
+          fallbackFormat="webp"
+        />
+        <div class="h-about-badge">
+          <strong>IBA · Philips</strong>
+          <span>{t(lang, 'fact.isotope.t')}</span>
+        </div>
+      </div>
       <div class="reveal">
-        <span class="eyebrow">{t(lang, 'about.eyebrow')}</span>
-        <h2 style="font-size:clamp(1.625rem,2.8vw,2.375rem);margin-block:8px 18px">{about.title}</h2>
+        <span class="eyebrow">{ui.advEyebrow}</span>
+        <h2 class="h-h2">{about.title}</h2>
         <div class="prose" set:html={about.description} />
+        <ul class="h-adv-list">
+          {advantages.slice(0, 4).map((item) => (
+            <li>{item.text}</li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive 4-Step Patient Journey (from V2) -->
+  <section class="section">
+    <div class="container">
+      <div class="h-journey-head reveal">
+        <div>
+          <span class="eyebrow">{t(lang, 'journey.eyebrow')}</span>
+          <h2 class="h-h2">{t(lang, 'journey.title')}</h2>
+        </div>
+        <span class="h-step-hint">{ui.stepHint}</span>
+      </div>
+
+      <div class="h-stepper reveal" data-stepper>
+        <div class="h-progress-track" aria-hidden="true">
+          <div class="h-progress-fill" data-progress style="width: 25%"></div>
+        </div>
+        <div class="h-steps-grid">
+          {steps.map((n, idx) => (
+            <button
+              type="button"
+              class:list={['h-step-card', { active: idx === 0 }]}
+              data-step={idx}
+              aria-pressed={idx === 0 ? 'true' : 'false'}
+            >
+              <span class="h-step-num">0{n}</span>
+              <h3>{t(lang, `journey.${n}.t`)}</h3>
+              <p>{t(lang, `journey.${n}.d`)}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Preview -->
+  <section class="section alt">
+    <div class="container h-faq-wrap">
+      <div class="h-faq-head reveal">
+        <div>
+          <span class="eyebrow">{ui.faqEyebrow}</span>
+          <h2 class="h-h2">{t(lang, 'faq.title')}</h2>
+        </div>
+        <a class="btn btn-secondary btn-sm" href={href(lang, '/faq')}>{ui.faqAll} →</a>
+      </div>
+      <div class="faq reveal">
+        {faqs.map((item) => (
+          <details>
+            <summary>{item.title}</summary>
+            <div class="prose" set:html={item.description} />
+          </details>
+        ))}
       </div>
     </div>
   </section>
 
   <ContactSection lang={lang} />
+  <MapSection lang={lang} />
 </Base>
+
+<script>
+  // Hero slider logic
+  (() => {
+    const hero = document.querySelector<HTMLElement>('.h-hero');
+    if (!hero) return;
+    const slides = Array.from(hero.querySelectorAll<HTMLElement>('[data-slide]'));
+    const dots = Array.from(hero.querySelectorAll<HTMLButtonElement>('[data-dot]'));
+    const prevBtn = hero.querySelector<HTMLButtonElement>('[data-prev]');
+    const nextBtn = hero.querySelector<HTMLButtonElement>('[data-next]');
+    if (slides.length <= 1) return;
+
+    let current = 0;
+    let timer: number | undefined;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const go = (idx: number) => {
+      current = (idx + slides.length) % slides.length;
+      slides.forEach((el, i) => {
+        const active = i === current;
+        el.classList.toggle('active', active);
+        el.setAttribute('aria-hidden', active ? 'false' : 'true');
+      });
+      dots.forEach((dot, i) => {
+        const active = i === current;
+        dot.classList.toggle('active', active);
+        dot.setAttribute('aria-pressed', active ? 'true' : 'false');
+      });
+    };
+
+    const start = () => {
+      if (reduced) return;
+      stop();
+      timer = window.setInterval(() => go(current + 1), 6000);
+    };
+    const stop = () => {
+      if (timer) window.clearInterval(timer);
+    };
+
+    prevBtn?.addEventListener('click', () => { go(current - 1); start(); });
+    nextBtn?.addEventListener('click', () => { go(current + 1); start(); });
+    dots.forEach((dot, i) => dot.addEventListener('click', () => { go(i); start(); }));
+
+    hero.addEventListener('mouseenter', stop);
+    hero.addEventListener('mouseleave', start);
+
+    let touchX = 0;
+    hero.addEventListener('touchstart', (e) => { touchX = e.changedTouches[0].clientX; }, { passive: true });
+    hero.addEventListener('touchend', (e) => {
+      const dx = e.changedTouches[0].clientX - touchX;
+      if (Math.abs(dx) > 45) {
+        go(dx < 0 ? current + 1 : current - 1);
+        start();
+      }
+    }, { passive: true });
+
+    start();
+  })();
+
+  // Diagnostic tabs logic
+  (() => {
+    const shell = document.querySelector('.h-tabs-shell');
+    if (!shell) return;
+    const tabs = Array.from(shell.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panels = Array.from(shell.querySelectorAll<HTMLElement>('[data-panel]'));
+
+    tabs.forEach((tab, idx) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((tBtn, i) => {
+          const active = i === idx;
+          tBtn.classList.toggle('active', active);
+          tBtn.setAttribute('aria-selected', active ? 'true' : 'false');
+        });
+        panels.forEach((panel, i) => {
+          const active = i === idx;
+          panel.classList.toggle('active', active);
+          panel.hidden = !active;
+        });
+      });
+    });
+  })();
+
+  // Interactive Stepper
+  (() => {
+    const stepper = document.querySelector('[data-stepper]');
+    if (!stepper) return;
+    const cards = Array.from(stepper.querySelectorAll<HTMLButtonElement>('[data-step]'));
+    const fill = stepper.querySelector<HTMLElement>('[data-progress]');
+
+    cards.forEach((card, idx) => {
+      card.addEventListener('click', () => {
+        cards.forEach((c, i) => {
+          const active = i === idx;
+          c.classList.toggle('active', active);
+          c.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
+        if (fill) {
+          fill.style.width = `${((idx + 1) / cards.length) * 100}%`;
+        }
+      });
+    });
+  })();
+</script>
+
+<style>
+  /* Hero Slider — lighter, clearer overlay */
+  .h-hero {
+    position: relative;
+    min-height: min(680px, calc(100svh - var(--header)));
+    display: flex;
+    align-items: center;
+    background: #3d2810;
+    color: #fff;
+    overflow: hidden;
+  }
+  .h-slides {
+    position: absolute;
+    inset: 0;
+  }
+  .h-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+    pointer-events: none;
+  }
+  .h-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .h-slide-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(1.06);
+    transition: transform 6.5s ease-out;
+  }
+  .h-slide.active .h-slide-img {
+    transform: scale(1);
+  }
+  .h-slide-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, rgba(42, 26, 6, 0.58) 0%, rgba(42, 26, 6, 0.30) 54%, rgba(42, 26, 6, 0.08) 100%);
+  }
+  .h-hero-inner {
+    position: relative;
+    z-index: 2;
+    padding-block: 64px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+  }
+  .h-hero-content {
+    max-width: 680px;
+  }
+  .h-pill {
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 999px;
+    background: rgba(42, 26, 6, 0.55);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 192, 74, 0.55);
+    color: var(--primary-light);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .h-hero h1 {
+    font-size: clamp(2rem, 4vw, 3.375rem);
+    color: #fff;
+    margin-block: 16px 18px;
+    text-shadow: 0 2px 16px rgba(20, 12, 2, 0.55);
+  }
+  .h-hero-desc {
+    color: #fff8ea;
+    font-size: 1.0625rem;
+    max-width: 58ch;
+    text-shadow: 0 1px 10px rgba(20, 12, 2, 0.55);
+  }
+  .h-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .h-btn-ghost {
+    background: rgba(42, 26, 6, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255, 192, 74, 0.75);
+    color: #fff;
+  }
+  .h-btn-ghost:hover {
+    background: rgba(42, 26, 6, 0.72);
+    color: var(--primary-light);
+  }
+  .h-slider-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .h-dots {
+    display: flex;
+    gap: 8px;
+  }
+  .h-dot {
+    width: 28px;
+    height: 6px;
+    border-radius: 999px;
+    border: 0;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.48);
+    cursor: pointer;
+    transition: width 0.25s ease, background 0.25s ease;
+  }
+  .h-dot.active {
+    width: 48px;
+    background: var(--primary);
+  }
+  .h-arrows {
+    display: flex;
+    gap: 8px;
+  }
+  .h-arrow {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 192, 74, 0.6);
+    background: rgba(42, 26, 6, 0.5);
+    backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 1.125rem;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .h-arrow:hover {
+    background: var(--primary);
+    color: var(--ink);
+  }
+
+  /* Quick Services Strip */
+  .h-quick-wrap {
+    position: relative;
+    z-index: 3;
+    margin-top: -48px;
+  }
+  .h-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .h-quick-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 22px 24px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    text-decoration: none;
+    color: var(--ink);
+    transition: transform 0.22s ease, border-color 0.22s ease;
+  }
+  .h-quick-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary);
+  }
+  .h-quick-num {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--grad-cta);
+    font-weight: 800;
+    font-size: 0.9375rem;
+  }
+  .h-quick-card h2 {
+    font-size: 1.0625rem;
+    margin-bottom: 4px;
+  }
+  .h-quick-card p {
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+  .h-quick-arrow {
+    margin-inline-start: auto;
+    font-weight: 700;
+    color: var(--link);
+  }
+
+  /* Diagnostic Tabs */
+  .h-tabs-shell {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .h-tablist {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 20px;
+    background: var(--paper-2);
+    border-bottom: 1px solid var(--line);
+  }
+  .h-tab-btn {
+    padding: 10px 20px;
+    border-radius: 999px;
+    border: 1.5px solid transparent;
+    background: var(--white);
+    color: var(--ink);
+    font: 600 0.9375rem var(--font-body);
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .h-tab-btn:hover {
+    border-color: var(--primary);
+  }
+  .h-tab-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+  .h-tab-panels {
+    padding: 32px;
+  }
+  .h-tab-panel.active {
+    animation: hFadeUp 0.3s ease;
+  }
+  @keyframes hFadeUp {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+  .h-panel-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+    gap: 36px;
+    align-items: center;
+  }
+  .h-panel-grid h3 {
+    font-size: clamp(1.375rem, 2.2vw, 1.875rem);
+    margin: 8px 0 14px;
+  }
+  .h-panel-prose {
+    color: var(--ink-soft);
+  }
+  .h-panel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .h-panel-meta {
+    display: grid;
+    gap: 12px;
+  }
+  .h-meta-box {
+    padding: 18px 20px;
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-inline-start: 4px solid var(--primary);
+    border-radius: var(--radius);
+  }
+  .h-meta-box strong {
+    display: block;
+    font-family: var(--font-head);
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .h-meta-box p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+
+  /* About Split */
+  .h-about-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 52px;
+    align-items: center;
+  }
+  .h-about-media {
+    position: relative;
+  }
+  .h-about-media img {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+  .h-about-badge {
+    position: absolute;
+    bottom: 18px;
+    left: 18px;
+    padding: 12px 18px;
+    background: rgba(42, 26, 6, 0.9);
+    color: #fff;
+    border-radius: var(--radius);
+    border-inline-start: 4px solid var(--primary);
+  }
+  .h-about-badge strong {
+    display: block;
+    color: var(--primary-light);
+    font-family: var(--font-head);
+  }
+  .h-about-badge span {
+    font-size: 0.8125rem;
+    color: #e9decb;
+  }
+  .h-h2 {
+    font-size: clamp(1.625rem, 2.8vw, 2.375rem);
+    margin-block: 8px 18px;
+  }
+  .h-adv-list {
+    list-style: none;
+    margin: 22px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .h-adv-list li {
+    position: relative;
+    padding-inline-start: 30px;
+    font-weight: 500;
+  }
+  .h-adv-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--grad-cta);
+    color: var(--ink);
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  /* Interactive Stepper (from V2) */
+  .h-journey-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .h-journey-head .h-h2 {
+    margin-bottom: 0;
+  }
+  .h-step-hint {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+  }
+  .h-progress-track {
+    height: 5px;
+    background: var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .h-progress-fill {
+    height: 100%;
+    background: var(--grad-cta);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+  .h-steps-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .h-step-card {
+    text-align: start;
+    padding: 24px 20px;
+    background: var(--white);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font: inherit;
+    color: var(--ink);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+  }
+  .h-step-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+  }
+  .h-step-card.active {
+    background: var(--paper);
+    border-color: var(--primary);
+    box-shadow: var(--shadow);
+  }
+  .h-step-num {
+    display: inline-grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--paper-2);
+    font-weight: 800;
+    font-size: 0.875rem;
+    margin-bottom: 14px;
+    transition: background 0.22s ease, color 0.22s ease;
+  }
+  .h-step-card.active .h-step-num {
+    background: var(--grad-cta);
+    color: var(--ink);
+  }
+  .h-step-card h3 {
+    font-size: 1.125rem;
+    margin-bottom: 8px;
+  }
+  .h-step-card p {
+    margin: 0;
+    font-size: 0.9375rem;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* FAQ */
+  .h-faq-wrap {
+    max-width: 900px;
+  }
+  .h-faq-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .h-faq-head .h-h2 {
+    margin-bottom: 0;
+  }
+
+  @media (max-width: 960px) {
+    .h-quick-wrap {
+      margin-top: 24px;
+    }
+    .h-quick-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .h-panel-grid,
+    .h-about-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .h-steps-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .h-hero-inner {
+      padding-block: 44px 56px;
+    }
+    .h-tab-panels {
+      padding: 20px;
+    }
+    .h-steps-grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .h-hero-actions .btn {
+      width: 100%;
+    }
+  }
+</style>
