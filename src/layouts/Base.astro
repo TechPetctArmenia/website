@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { LANGS, LANG_LABELS, OG_LOCALE, PHONE_DISPLAY, PHONE_TEL, EMAIL, SOCIAL, href, t, type Lang } from '../i18n';
+import { LANGS, LANG_LABELS, OG_LOCALE, PHONE_DISPLAY, PHONE_TEL, EMAIL, SOCIAL, asset, href, t, type Lang } from '../i18n';
 import { table } from '../lib/content';
 
 interface Props { lang: Lang; route: string; title?: string; description?: string; }
@@ -44,8 +44,8 @@ const jsonLd = {
     <meta property="og:description" content={desc} />
     <meta property="og:url" content={abs(lang)} />
     <meta property="og:locale" content={OG_LOCALE[lang]} />
-    <link rel="icon" href="/favicon.ico" sizes="32x32" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href={asset('/favicon.ico')} sizes="32x32" />
+    <link rel="apple-touch-icon" href={asset('/apple-touch-icon.png')} />
     <meta name="theme-color" content="#f2a21c" />
     <script is:inline>document.documentElement.classList.remove('no-js')</script>
     <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -57,8 +57,8 @@ const jsonLd = {
       <div class="container header-row">
         <a class="brand" href={href(lang, '/')} aria-label={siteName}>
           {lang === 'hy'
-            ? <img src="/img/logo.svg" alt="" width="131" height="56" />
-            : <><img src="/img/mark.svg" alt="" width="53" height="56" /><span>{siteName}</span></>}
+            ? <img src={asset('/img/logo.svg')} alt="" width="131" height="56" />
+            : <><img src={asset('/img/mark.svg')} alt="" width="53" height="56" /><span>{siteName}</span></>}
         </a>
         <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="nav" aria-label={t(lang, 'menu')}>☰</button>
         <nav class="nav" id="nav" aria-label={t(lang, 'menu')}>
@@ -148,8 +148,8 @@ const jsonLd = {
         <div class="footer-grid">
           <div>
             {lang === 'hy'
-              ? <img src="/img/logo-light.svg" alt={siteName} width="196" height="84" loading="lazy" />
-              : <><img src="/img/mark.svg" alt="" width="79" height="84" loading="lazy" /><p>{siteName}</p></>}
+              ? <img src={asset('/img/logo-light.svg')} alt={siteName} width="196" height="84" loading="lazy" />
+              : <><img src={asset('/img/mark.svg')} alt="" width="79" height="84" loading="lazy" /><p>{siteName}</p></>}
             <div class="footer-social" aria-label="Social media">
               <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" title="Instagram">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
